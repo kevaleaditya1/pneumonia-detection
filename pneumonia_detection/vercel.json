@@ -1,0 +1,12 @@
+{
+    "env": {
+      "PYTHON_VERSION": "3.10"
+    },
+    "builds": [
+      {
+        "src": "api/*.py",
+        "use": "@vercel/python"
+      }
+    ]
+  }
+  
