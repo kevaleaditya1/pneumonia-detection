@@ -1,0 +1,12 @@
+# Exclude model files
+model/xray_model.hdf5
+
+# Exclude datasets
+datasets/
+
+# Exclude Python virtual environment
+venv/
+
+# Exclude unnecessary caches and logs
+*.log
+__pycache__/
