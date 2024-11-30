@@ -1,27 +1,41 @@
+import os
+import requests
 import streamlit as st
 import tensorflow as tf
 import cv2
 from PIL import Image, ImageOps
 import numpy as np
-import gdown
-import os
+
+# Function to download a file from Google Drive
+def download_from_drive(file_id, destination):
+    url = f"https://drive.google.com/uc?id={file_id}"
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(destination, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+    else:
+        st.error("Failed to download the model from Google Drive. Please check the file ID and try again.")
+
+# Path to the model
+model_path = "model/xray_model.hdf5"
+
+# Google Drive file ID (replace this with your actual file ID)
+file_id = "YOUR_FILE_ID"
+
+# Check if the model exists locally; if not, download it
+if not os.path.exists(model_path):
+    st.info("Downloading model from Google Drive. Please wait...")
+    os.makedirs(os.path.dirname(model_path), exist_ok=True)  # Create directory if it doesn't exist
+    download_from_drive(file_id, model_path)
 
 @st.cache_resource
 def load_model():
-    model_path = "xray_model.hdf5"
-
-    # Check if the model is already downloaded
-    if not os.path.exists(model_path):
-        # Google Drive file ID
-        file_id = "1YG_HzGByV8W3xKMNPPEMaJxExHwI9TfP"
-        url = f"https://drive.google.com/file/d/1YG_HzGByV8W3xKMNPPEMaJxExHwI9TfP/view?usp=drive_link"
-        st.info("Downloading model from Google Drive. Please wait...")
-        gdown.download(url, model_path, quiet=False)
-    
     model = tf.keras.models.load_model(model_path, compile=False)
     return model
 
-with st.spinner('Model is being loaded..'):
+with st.spinner('Model is being loaded...'):
     model = load_model()
 
 st.write("""
@@ -49,9 +63,9 @@ else:
     st.write(predictions)
     st.write(score)
 
-    # Assuming you have class_names defined
+    # Assuming you have `class_names` defined
     class_names = ['Normal', 'Pneumonia']
-    
+
     st.write(
         "This image most likely belongs to **{}** with a {:.2f}% confidence."
         .format(class_names[np.argmax(score)], 100 * np.max(score))
