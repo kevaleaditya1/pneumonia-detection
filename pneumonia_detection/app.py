@@ -8,7 +8,7 @@ import numpy as np
 
 # Function to download a file from Google Drive
 def download_from_drive(file_id, destination):
-    url = f"https://drive.google.com/uc?id={file_id}"
+    url = f"https://drive.google.com/file/d/1YG_HzGByV8W3xKMNPPEMaJxExHwI9TfP/view?usp=drive_link"
     response = requests.get(url, stream=True)
     if response.status_code == 200:
         with open(destination, "wb") as f:
@@ -22,7 +22,7 @@ def download_from_drive(file_id, destination):
 model_path = "model/xray_model.hdf5"
 
 # Google Drive file ID (replace this with your actual file ID)
-file_id = "YOUR_FILE_ID"
+file_id = "1YG_HzGByV8W3xKMNPPEMaJxExHwI9TfP"
 
 # Check if the model exists locally; if not, download it
 if not os.path.exists(model_path):
